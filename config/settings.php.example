@@ -1,0 +1,87 @@
+<?php
+    // Should be set to 0 in production
+    error_reporting(E_ALL);
+
+    // Should be set to '0' in production
+    ini_set('display_errors', '1');
+
+    // Timezone
+    date_default_timezone_set('US/Eastern');
+
+    // Settings
+    $settings = [];
+
+    // Path settings
+    $settings['domain'] = "";
+    $settings['root'] = dirname(__DIR__);
+    $settings['temp'] = $settings['root'] . '/tmp';
+    $settings['public'] = $settings['root'] . '/public';
+
+    // Logging settings
+    $settings['logger'] = [
+        'name' => 'avianart-api',
+        'path' => $settings['root'] . '/logs/' . date('Y-m-d') . '-avianart-api.log',
+        'level' => \Monolog\Level::Debug
+    ];
+
+    // Cache settings
+    $settings['cache'] = [
+        'adapter' => \Laminas\Cache\Storage\Adapter\Apcu::class,
+        'options' => [
+            'namespace' => 'avianart-api',
+            'ttl' => 3600,
+        ]
+    ];
+
+    // S3 settings
+    $settings['s3'] = Array(
+        'seedsBucket' => "",
+        'presetsBucket' => "",
+        'seedsPubUrl' => "",
+        'presetsPubUrl' => "",
+        'clientConfig' => [
+            'version' => '',
+            'region' => '',
+            'endpoint' => '',
+            'credentials' => [
+                'key' => '',
+                'secret' => '',
+            ]
+        ]
+    );
+
+    // Discord settings
+    $settings['discord'] = Array(
+        'clientId' => '',
+        'clientSecret' => '',
+        'redirectUri' => '',
+        'scopes' => ['']
+    );
+
+    // Z3R settings
+    $settings['z3r'] = Array(
+        'pythonPath' => "",
+        'tempPath' => "/tmp/Z3R-",
+        'basePath' => "/path/to/base/folder",
+        'branches' => [
+            "DR"            => "/path/to/ALttPDoorRandomizer",
+        ]
+    );
+
+    // Error Handling Middleware settings
+    $settings['error'] = [
+
+        // Should be set to false in production
+        'display_error_details' => true,
+
+        // Parameter is passed to the default ErrorHandler
+        // View in rendered output by enabling the "displayErrorDetails" setting.
+        // For the console and unit tests we also disable it
+        'log_errors' => true,
+
+        // Display error details in error log
+        'log_error_details' => true,
+    ];
+
+    return $settings;
+?>
