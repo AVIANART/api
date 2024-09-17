@@ -152,6 +152,9 @@
                         return $response->withHeader('Location', '/v1/oauth2/discord');
                     return $response->withJson(array('presets' => $this->fetchPresets($request->getAttribute('userPrefix'))));
                 }
+                if($args['prefix'] == "global") {
+                    return $this->getGenerator($request, $response, $args);
+                }
                 try {
                     return $response->withJson(array('presets' => $this->fetchPresets($args['prefix'])));
                 } catch(Exception $e) {

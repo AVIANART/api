@@ -97,15 +97,15 @@
 
             $group->get('/perm/{hash}', \App\Actions\Permlink::class . ':getSeed');
             
-            $group->get('/presets/global/generator', \App\Actions\Presets::class . ':getGenerator');
-
-            $group->get('/presets/{namespace}[/{preset}]', \App\Actions\Presets::class . ':getPreset');
-
-            $group->get('/presets[/{prefix}]', \App\Actions\Presets::class . ':getPresets');
-
-            $group->put('/presets/me[/{preset}]', \App\Actions\Presets::class . ':createPreset');
-            
             $group->get('/tabs[/{branch}]', \App\Actions\Tabs::class);
+
+            $group->group('/presets', function (RouteCollectorProxy $presets) {
+                $presets->get('/{namespace}[/{preset}]', \App\Actions\Presets::class . ':getPreset');
+
+                $presets->get('[/{prefix}]', \App\Actions\Presets::class . ':getPresets');
+
+                $presets->put('/me[/{preset}]', \App\Actions\Presets::class . ':createPreset');
+            });
         });
     };
 ?>
