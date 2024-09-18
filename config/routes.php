@@ -20,7 +20,22 @@
                     ->withHeader('Access-Control-Allow-Origin', $this->get('settings')['debug'] ? "*" : $this->get('settings')['domain'])
                     ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
                     ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-        });        
+        });
+
+        $app->group('/debug', function (RouteCollectorProxy $group) {
+            $group->get('/phpinfo', function (Request $request, Response $response, array $args) {
+                phpinfo();
+                return $response;
+            });
+            $group->get('/settings', function (Request $request, Response $response, array $args) {
+                return $response->withJson($this->get('settings'));
+            });
+            $group->get('/clearcache', function (Request $request, Response $response, array $args) {
+                $pool = new CacheItemPoolDecorator($this->get(StorageAdapterFactoryInterface::class));
+                $pool->clear();
+                return $response->withJson(array('message' => 'Cache cleared'));
+            });
+        });
 
         $app->group('/v1', function (RouteCollectorProxy $group) {
             $group->get('/', function (Request $request, Response $response, array $args) {

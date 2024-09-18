@@ -43,10 +43,12 @@
                 foreach($rawPresets as $key=>$value) {
                     $handle = $this->s3->getObject($this->container->get('settings')['s3']['presetsBucket'], $value['Key']);
                     $data = yaml_parse($handle->getContents());
+                    $key = $value['Key'];
                     $name = array_key_exists('seed_name', $data['meta']) ? $data['meta']['seed_name'] : explode("||",$data['meta']['user_notes'])[0];
                     $description = array_key_exists('seed_notes', $data['meta']) ? $data['meta']['seed_notes'] : explode("||",$data['meta']['user_notes'])[1];
                     $category = array_key_exists('category', $data['meta']) ? $data['meta']['category'] : "misc";
                     $presetsData[] = array(
+                        'key' => $key,
                         'name' => $name,
                         'description' => $description,
                         'branch' => array_key_exists('branch', $data['meta']) ? $data['meta']['branch'] : "DRUnstable",
@@ -139,18 +141,18 @@
                 if($args['prefix'] == "me") {
                     if(!$this->isAuthenticated($request))
                         return $response->withHeader('Location', '/v1/oauth2/discord');
-                    return $response->withJson(array('presets' => $this->fetchPresets($request->getAttribute('userPrefix'))));
+                    return $response->withJson(array('presets' => $this->fetchGeneratorPresets($request->getAttribute('userPrefix'))));
                 }
                 if($args['prefix'] == "avianart_generate") {
                     return $response->withJson(array('presets' => $this->fetchGeneratorPresets()));
                 }
                 try {
-                    return $response->withJson(array('presets' => $this->fetchPresets($args['prefix'])));
+                    return $response->withJson(array('presets' => $this->fetchGeneratorPresets($args['prefix'])));
                 } catch(Exception $e) {
                     throw new HttpNotFoundException($request, $e->getMessage());
                 }
             }
-            return $response->withJson(array('presets' => $this->fetchPresets()));
+            return $response->withJson(array('presets' => $this->fetchGeneratorPresets()));
         }
 
         public function createPreset(Request $request, Response $response, array $args): Response {
