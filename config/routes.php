@@ -99,8 +99,9 @@
             
             $group->get('/tabs[/{branch}]', \App\Actions\Tabs::class);
 
+            $group->get('/preset/{namespace}[/{preset}]', \App\Actions\Presets::class . ':getPreset');
+
             $group->group('/presets', function (RouteCollectorProxy $presets) {
-                $presets->get('/{namespace}[/{preset}]', \App\Actions\Presets::class . ':getPreset');
 
                 $presets->get('[/{prefix}]', \App\Actions\Presets::class . ':getPresets');
 

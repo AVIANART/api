@@ -66,24 +66,13 @@
 
         /**
          * @OA\Get(
-         *     path="/v1/presets/global/generator",
-         *     @OA\Response(response="200", description="Get the generator presets"),
-         * )
-         */
-        public function getGenerator(Request $request, Response $response, array $args): Response {
-            $this->container->get(LoggerInterface::class)->info('Presets requested', ['args' => $args]);
-            return $response->withJson(array('presets' => $this->fetchGeneratorPresets()));
-        }
-
-        /**
-         * @OA\Get(
-         *     path="/v1/presets/{namespace}/{preset}",
+         *     path="/v1/preset/{namespace}/{preset}",
          *     @OA\Response(response="200", description="Get a specific preset"),
          *     @OA\Parameter(name="namespace", in="path", description="Namespace to use", required=true, @OA\Schema(type="string")),
          *     @OA\Parameter(name="preset", in="path", description="Name of the preset to retrieve", required=true, @OA\Schema(type="string")),
          * ),
          * @OA\Get(
-         *     path="/v1/presets/{preset}",
+         *     path="/v1/preset/{preset}",
          *     @OA\Response(response="200", description="Get a specific preset"),
          *     @OA\Parameter(name="preset", in="path", description="Name of the preset to retrieve", required=true, @OA\Schema(type="string")),
          * )
@@ -152,8 +141,8 @@
                         return $response->withHeader('Location', '/v1/oauth2/discord');
                     return $response->withJson(array('presets' => $this->fetchPresets($request->getAttribute('userPrefix'))));
                 }
-                if($args['prefix'] == "global") {
-                    return $this->getGenerator($request, $response, $args);
+                if($args['prefix'] == "avianart_generate") {
+                    return $response->withJson(array('presets' => $this->fetchGeneratorPresets()));
                 }
                 try {
                     return $response->withJson(array('presets' => $this->fetchPresets($args['prefix'])));
